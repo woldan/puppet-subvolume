@@ -1,0 +1,35 @@
+# Subvolume type for Puppet
+
+A basic type and provider to manage subvolumes (so far only on
+btrfs filesystems) using Puppet.
+
+See [puppet-btrfs][https://github.com/woldan/puppet-btrfs] for
+managing the btrfs filesystem itself.
+
+Currently this is work in progress and not yet ready for public
+usage. You are welcome to participate, though.
+
+## Prerequisites
+
+The specified `filesystem` need to be btrfs formatted and mounted.
+I would recommend to ensure both with a Puppet resource as well,
+such as the aforementioned [puppet-btrfs][https://github.com/woldan/puppet-btrfs].
+
+## Declaring btrfs subvolumes
+
+To declare a btrfs subvolume use a definition like this:
+
+    subvolume { "/some/mountpoint/subvolume" :
+      require => Btrfs["/some/mountpoint"],
+      ensure => present,
+    }
+
+This effects in creation of the sobvolume if necessary: `btrfs subvolume create <subvolume-path>`
+The `require` clause would relate to a filesystem declaration like this one:
+
+    btrfs { "/some/mountpoint" :
+      ensure => present,
+      device => "/dev/sdb",
+    }
+
+
