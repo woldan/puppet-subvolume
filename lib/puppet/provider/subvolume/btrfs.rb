@@ -16,9 +16,8 @@ Puppet::Type.type(:subvolume).provide(:btrfs) do
     matched = /^(.*)\/(.*?)$/.match(@resource[:path])
     filesys = matched[1]
     subvol = matched[2]
-
-    #TODO: this should also support nested subvolumes:
-    if btrfscmd(:subvolume, :list, filesys).split("\n").detect { |line| line.split("\s")[-1] == subvol }
+# Ensure the line ends with the subvolume we want to create (and handle nested subvolumes)
+    if btrfscmd(:subvolume, :list, filesys).split("\n").detect { |line| line.split("\s")[-1] =~ /.*#{subvol}$/ }
       true
     else
       false
